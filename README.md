@@ -21,13 +21,13 @@ Pretendo nesse projeto demostrar e colocar prática estudos sobre novas tecnolog
 
 <h4 align="center"> 
 	🚧 Em construção... 🚧
-    Futuramente criar um app hibrido em Flutter para executar requisições da API
+    Futuramente criar um app hibrido em Flutter para executar requisições da API,
 </h4>
 
 ### Web
 <h4 align="center">
-    Implementação telas para execução do CRUD
-	<!-- 🚧 NextLevelWeek 1.0 🚀 em construção... 🚧 -->
+    🚧 Em construção... 🚧
+    Implementação telas para execução do CRUD,
 </h4>
 
 ## 🛠 Tecnologias
@@ -51,7 +51,7 @@ Podemos considerar este projeto como sendo divido em duas partes:
 ### Pré-requisitos
 
 Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:
-[Git](https://git-scm.com), [Node.js][nodejs], [Docker][docker].
+[Git](https://git-scm.com), [Node.js][nodejs], [Docker][docker], [yarn][yarn].
 Além disto é bom ter um editor para trabalhar com o código como [VSCode][vscode]
 
 
@@ -61,16 +61,16 @@ Além disto é bom ter um editor para trabalhar com o código como [VSCode][vsco
 # Clone este repositório
 $ git clone https://github.com/weberthmo/api-note-elasticStack
 
-Acesse a pasta do projeto no terminal/cmd
+# Acesse a pasta do projeto no terminal/cmd
 $ cd calcLeite-backend
 
-Iniciando container Docker
+# Iniciando container Docker
 $ docker-compose up
 
-iniciando o serviço NodeJs
+# iniciando o serviço NodeJs
 $  yarn dev;
 
-O servidor inciará na porta:XXXX - acesse http://localhost:XXXX
+# O serviço NodeJs inciará na porta:7000 - acesse http://localhost:7000
 ```
 
 ### 🧭 Rodando a aplicação web (Front End)
@@ -90,8 +90,6 @@ O servidor inciará na porta:XXXX - acesse http://localhost:XXXX
 <h4 align="center"> 
 	🚧 api-note-elasticStack 1.0 🚀 em construção... 🚧
 </h4>
-
-Feito com ❤️ para obter e repassar conhecimentos 👋🏽 [Entre em contato!](https://api.whatsapp.com/send?phone=5562982083372)
 
 [nodejs]: https://nodejs.org/
 [reactjs]: https://reactjs.org
