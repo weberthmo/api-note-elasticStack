@@ -1,8 +1,10 @@
 version: '3'
 
 services:
-  elasticsearch:
+   ###elasticsearch###
+  Elasticsearch:
     image: elasticsearch:7.12.1
+    container_name: Elasticsearch
     ports:
       - '9200:9200'
     environment:
@@ -14,7 +16,112 @@ services:
         hard: -1
     volumes:        
     - ./elasticData:/usr/share/elasticsearch/data
+  ###kibana###
   kibana:
     image: kibana:7.12.1
+    container_name: kibana
+    depends_on:
+      - Elasticsearch
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./kibana:/usr/share/kibana/data
     ports:
       - '5601:5601'
+      
+  ###setup_apm_server###
+  setup_apm_server:
+    image: docker.elastic.co/apm/apm-server:7.12.1
+    container_name: setup_apm_server
+    volumes: ['./docker-setup-apm-server.sh:/usr/local/bin/setup-beat.sh:ro']
+    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s apm-server']
+    depends_on:
+      - Elasticsearch
+      - kibana
+
+  ###apm_server###
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:7.12.1
+    container_name: apm-server
+    depends_on:
+      - Elasticsearch
+      - kibana
+      - setup_apm_server
+    ports:
+      - 127.0.0.1:8200:8200
+    command: -e -E 'output.elasticsearch.password=kibana'
+    # depends_on: ['Elasticsearch','setup_apm_server']
+
+
+  ###MetricBeat###
+  metricbeat-dashboard:
+    container_name: metricbeat-dashboard
+    image: docker.elastic.co/beats/metricbeat:7.12.1
+    depends_on:
+      - Elasticsearch
+    environment:
+      output.elasticsearch.hosts: '["Elasticsearch:9200"]'
+      output.logstash.enabled: 'false'
+      setup.kibana.host: kibana:5601
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+    command:
+    - setup
+    - --dashboards
+    
+
+  metricbeat:
+    container_name: metricbeat
+    image: docker.elastic.co/beats/metricbeat:7.12.1
+    depends_on:
+      - Elasticsearch
+    environment:
+      LOGSTASH_FIELDS: logfilter=metricbeat
+      LOGSTASH_TAGS: metricbeat
+      output.logstash.hosts: '["logstash:5044"]'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/hostfs/proc:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /:/hostfs:ro
+    command:
+    - metricbeat
+    - -e 
+    - --system.hostfs=/hostfs
+
+  metricbeat-template:
+    container_name: metricbeat-template
+    image: docker.elastic.co/beats/metricbeat:7.12.1
+    depends_on:
+      - Elasticsearch
+    environment:
+      output.elasticsearch.hosts: '["Elasticsearch:9200"]'
+      output.logstash.enabled: 'false'
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    command:
+    - setup
+    - --template
+
+###heartbeat###
+  heartbeat:
+    image: docker.elastic.co/beats/heartbeat:7.12.1
+    container_name: heartbeat
+    depends_on:
+      - Elasticsearch
+      - kibana
+    volumes:
+        - ./heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml:ro
+
+
+
+    
+
+        

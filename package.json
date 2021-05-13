@@ -5,6 +5,7 @@
   "author": "Weberth Moreira",
   "license": "MIT",
   "dependencies": {
+    "elastic-apm-node": "^3.14.0",
     "elasticsearch": "^16.7.2",
     "express": "^4.17.1",
     "nodemon": "^2.0.7"
